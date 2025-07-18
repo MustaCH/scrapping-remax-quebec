@@ -25,6 +25,6 @@ RUN npm install
 # Copia el resto de tu código de aplicación
 COPY . .
 
-# El comando para ejecutar tu aplicación debe usar xvfb-run
+# El comando para ejecutar tu aplicación debe usar xvfb
 # Asegúrate de que 'server.js' sea tu archivo principal que inicia el servidor Express
 CMD ["xvfb-run", "node", "server.js"] 
