@@ -1,5 +1,5 @@
 # Usar imagen oficial de Playwright con Node.js
-FROM mcr.microsoft.com/playwright:v1.44.0-jammy
+FROM mcr.microsoft.com/playwright:v1.52.0-jammy
 
 # Instalar dependencias adicionales del sistema
 RUN apt-get update && apt-get install -y \
