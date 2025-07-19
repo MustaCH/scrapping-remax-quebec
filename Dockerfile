@@ -20,6 +20,7 @@ COPY . .
 
 # Instalar dependencias de Node.js
 RUN npm install
+RUN npx playwright install --with-deps
 
 # Exponer puerto si es necesario
 EXPOSE 3000

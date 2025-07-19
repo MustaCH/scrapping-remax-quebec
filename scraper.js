@@ -21,7 +21,7 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
     try {
         console.log("scrapeRemaxQuebec: Lanzando navegador para scraping de scroll infinito...");
         // Mantén headless: false para depuración inicial para ver el proceso
-        browser = await chromium.launch({ headless: false, ...launchOptions }); 
+        browser = await chromium.launch({ headless: true, ...launchOptions }); 
         const context = await browser.newContext({
             viewport: { width: 1920, height: 1080 },
         });
@@ -38,7 +38,7 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
         
         try {
             await page.waitForSelector(cookieButtonSelector, { state: 'visible', timeout: 15000 });
-            consolei.log("scrapeRemaxQuebec: Botón de cookies encontrado. Haciendo clic...");
+            console.log("scrapeRemaxQuebec: Botón de cookies encontrado. Haciendo clic...");
             await page.click(cookieButtonSelector);
             await page.waitForTimeout(2000); // Dar tiempo para que el pop-up se cierre y la página se asiente
             console.log("scrapeRemaxQuebec: Clic en botón de cookies realizado.");

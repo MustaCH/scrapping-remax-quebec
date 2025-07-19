@@ -4,7 +4,7 @@ const { scrapeRemaxQuebec } = require('./scraper'); // Asegúrate de que la ruta
 
 const app = express();
 // Puedes cambiar el puerto a 8080 si 3001 ya está en uso por n8n u otro proceso
-const port = process.env.PORT || 3001; 
+const port = process.env.PORT || 3000; 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
