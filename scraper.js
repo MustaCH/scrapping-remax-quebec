@@ -49,7 +49,7 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
         // --- Bucle de Scroll Infinito ---
         let previousScrollHeight = -1; 
         let scrollAttempt = 0;
-        const MAX_SCROLL_ATTEMPTS = 500; 
+        const MAX_SCROLL_ATTEMPTS = 1; 
 
         const PROPERTY_ITEM_SELECTOR = 'a.card.card-property-thumbnail';
         const SCROLLABLE_CONTAINER_SELECTOR = 'aside'; 
