@@ -18,13 +18,13 @@ async function getTotalProperties(operation = 'for-sale') {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
 
-  // Simula navegador real
-  await context.setDefaultNavigationTimeout(30000);
+  await context.setExtraHTTPHeaders({
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+  });
+
   const page = await context.newPage();
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.setUserAgent(
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-  );
 
   console.log(`🔍 Navegando a: ${url}`);
   try {
@@ -47,8 +47,6 @@ async function getTotalProperties(operation = 'for-sale') {
     return { success: false, operation, error: err.message };
   }
 }
-
-
 
 async function scrapeRemaxQuebec(operationType = 'for-sale') {
     let browser;
