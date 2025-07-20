@@ -32,7 +32,10 @@ async function getTotalProperties(operationType = 'for-sale') {
         console.log(`🔍 Navegando a: ${url}`);
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-        await page.waitForTimeout(4000); // Le damos unos segundos más por si carga lento
+        const containerSelector = '.results-lists';
+        console.log(`⏳ Esperando que aparezca el contenedor "${containerSelector}"...`);
+        await page.waitForSelector(containerSelector, { timeout: 15000 });
+        console.log(`✅ Contenedor "${containerSelector}" encontrado.`);
 
         // Usamos regex sobre el H1 directamente, como backup robusto
         const h1Text = await page.$eval('.results_lists .results-lists__header h1 span.count', el => el.innerText);
