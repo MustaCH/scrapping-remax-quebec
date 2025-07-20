@@ -17,31 +17,37 @@ async function getTotalProperties(operation = 'for-sale') {
   const url = `https://www.remax.ca/${operation}`;
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
+
+  // Simula navegador real
+  await context.setDefaultNavigationTimeout(30000);
   const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+  );
 
   console.log(`🔍 Navegando a: ${url}`);
-  await page.goto(url, { waitUntil: 'networkidle' });
-
   try {
-    // Esperar por selector con mayor timeout
-    await page.waitForTimeout(5000);
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-    const exists = await page.$('.results-lists__header .count');
-    if (!exists) {
-      throw new Error('❌ Selector .count no encontrado en el DOM');
-    }
+    await page.waitForTimeout(4000); // Esperar por contenido
 
-    const total = await page.$eval('.results-lists__header .count', el =>
-      parseInt(el.textContent.replace(/\D/g, ''), 10)
-    );
+    // Buscar el <h1> y extraer el número con regex
+    const h1Text = await page.$eval('.results-lists__header h1', el => el.innerText);
+    const match = h1Text.match(/\d[\d,\.]*/);
+    const total = match ? parseInt(match[0].replace(/[^\d]/g, ''), 10) : null;
+
+    if (!total) throw new Error('❌ No se pudo extraer el número total');
 
     await browser.close();
     return { success: true, operation, total };
   } catch (err) {
+    console.error(`❌ Error al obtener el total para ${operation}`, err);
     await browser.close();
     return { success: false, operation, error: err.message };
   }
-};
+}
+
 
 
 async function scrapeRemaxQuebec(operationType = 'for-sale') {
