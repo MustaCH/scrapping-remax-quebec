@@ -187,6 +187,11 @@ async function scrapeRemaxQuebec(operationType = 'for-sale', range = {}) {
             
             console.log(`  -> Propiedades únicas añadidas en este scroll: ${propertiesAddedThisScroll}. Total de propiedades únicas extraídas HASTA AHORA: ${allProperties.size}`);
             
+            if (typeof endIndex === 'number' && allProperties.size > endIndex) {
+                console.log(`✅ Ya se recolectaron más de ${endIndex} propiedades. Deteniendo scroll anticipadamente.`);
+                break;
+            }
+            
             if (propertiesAddedThisScroll === 0 && scrollAttempt > 1) { 
                 console.log("✅ scrapeRemaxQuebec: No se encontraron nuevas propiedades únicas después de este scroll. Asumiendo el final de la lista.");
                 break; 
