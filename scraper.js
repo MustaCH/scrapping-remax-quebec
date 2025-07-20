@@ -20,36 +20,28 @@ async function getTotalProperties(operation = 'for-sale') {
   const page = await context.newPage();
 
   console.log(`🔍 Navegando a: ${url}`);
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.goto(url, { waitUntil: 'networkidle' });
 
   try {
-    // Espera a que aparezca el <span class="count">
-    await page.waitForSelector('.results-lists__header .count', { timeout: 10000 });
+    // Esperar por selector con mayor timeout
+    await page.waitForTimeout(5000);
 
-    // Extrae el contenido del <span>
+    const exists = await page.$('.results-lists__header .count');
+    if (!exists) {
+      throw new Error('❌ Selector .count no encontrado en el DOM');
+    }
+
     const total = await page.$eval('.results-lists__header .count', el =>
       parseInt(el.textContent.replace(/\D/g, ''), 10)
     );
 
-    console.log(`✅ Total de propiedades para ${operation}: ${total}`);
     await browser.close();
-
-    return {
-      success: true,
-      operation,
-      total
-    };
+    return { success: true, operation, total };
   } catch (err) {
-    console.error(`❌ Error al obtener el total para ${operation}`, err);
     await browser.close();
-
-    return {
-      success: false,
-      operation,
-      error: err.message
-    };
+    return { success: false, operation, error: err.message };
   }
-}
+};
 
 
 async function scrapeRemaxQuebec(operationType = 'for-sale') {
