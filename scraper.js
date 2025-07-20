@@ -35,7 +35,7 @@ async function getTotalProperties(operationType = 'for-sale') {
         await page.waitForTimeout(4000); // Le damos unos segundos más por si carga lento
 
         // Usamos regex sobre el H1 directamente, como backup robusto
-        const h1Text = await page.$eval('.results-lists__header h1', el => el.innerText);
+        const h1Text = await page.$eval('.results_lists .results-lists__header h1 span.count', el => el.innerText);
         const match = h1Text.match(/\d[\d,\.]*/);
         const total = match ? parseInt(match[0].replace(/[^\d]/g, ''), 10) : null;
 
