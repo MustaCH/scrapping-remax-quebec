@@ -70,10 +70,11 @@ async function getTotalProperties(operationType = 'for-sale') {
 
 
 
-async function scrapeRemaxQuebec(operationType = 'for-sale') {
+async function scrapeRemaxQuebec(operationType = 'for-sale', range = {}) {
     let browser;
     let page;
     let allProperties = new Map(); 
+    const { startIndex, endIndex } = range;
 
     try {
         console.log("scrapeRemaxQuebec: Lanzando navegador para scraping de scroll infinito...");
@@ -201,8 +202,13 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
 
         const finalMappedProperties = Array.from(allProperties.values()); 
 
+        const slicedProperties = (typeof startIndex === 'number' && typeof endIndex === 'number')
+            ? finalMappedProperties.slice(startIndex, endIndex + 1)
+            : finalMappedProperties;
+
         console.log(`✅ scrapeRemaxQuebec: Proceso completado. Total de propiedades únicas extraídas: ${finalMappedProperties.length}`);
-        return finalMappedProperties;
+        console.log(`📦 Devolviendo ${slicedProperties.length} propiedades${startIndex !== undefined ? ` (rango ${startIndex}-${endIndex})` : ''}`);
+        return slicedProperties;
 
     } catch (error) {
         console.error(`❌ scrapeRemaxQuebec: Error fatal en scrapeRemaxQuebec:`, error);

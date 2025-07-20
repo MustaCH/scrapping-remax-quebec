@@ -52,10 +52,10 @@ app.get('/api/total', async (req, res) => {
 // Endpoint para iniciar el scraping
 app.get('/api/scrape', async (req, res) => {
     try {
-        // Determinar el tipo de operación: 'for-sale' o 'for-rent'
-        // Prioriza el parámetro 'type' si está presente.
         const queryType = req.query.type;
-        const operationId = parseInt(req.query.operationId); // 1 para venta, 2 para alquiler (asumiendo)
+        const operationId = parseInt(req.query.operationId);
+        const startIndex = parseInt(req.query.startIndex);
+        const endIndex = parseInt(req.query.endIndex);
 
         let operationType;
 
@@ -63,30 +63,27 @@ app.get('/api/scrape', async (req, res) => {
             operationType = 'for-sale';
         } else if (queryType === 'for-rent') {
             operationType = 'for-rent';
-        } else if (operationId === 1) { // Si 'type' no está o es inválido, intenta con operationId
+        } else if (operationId === 1) {
             operationType = 'for-sale';
         } else if (operationId === 2) {
             operationType = 'for-rent';
         } else {
-            // Si ninguno de los anteriores se especifica o es válido, usar un valor por defecto y avisar.
-            console.warn(`Tipo de operación no especificado o inválido ('${queryType}', operationId: ${operationId}). Usando "for-sale" por defecto.`);
+            console.warn(`Tipo de operación inválido ('${queryType}', operationId: ${operationId}). Usando "for-sale" por defecto.`);
             operationType = 'for-sale'; 
         }
 
-        console.log(`🚀 Iniciando scraping para la operación: ${operationType}`);
-        
-        // Llama a la función del scraper que ahora maneja todas las páginas y selectores
-        const properties = await scrapeRemaxQuebec(operationType);
-        
-        // Envía la respuesta con los datos extraídos
+        console.log(`🚀 Iniciando scraping para operación: ${operationType} | Rango: ${startIndex} - ${endIndex}`);
+
+        const properties = await scrapeRemaxQuebec(operationType, { startIndex, endIndex });
+
         res.status(200).json({ success: true, data: properties });
 
     } catch (err) {
         console.error('❌ Error crítico en la ruta /api/scrape:', err);
-        // Envía una respuesta de error al cliente
         res.status(500).json({ success: false, error: err.message });
     }
 });
+
 
 
 // Inicia el servidor Express
