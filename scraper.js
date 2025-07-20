@@ -19,7 +19,7 @@ async function getTotalProperties(operationType = 'for-sale') {
 
     try {
         console.log(`🔍 Obteniendo total de propiedades para operación: ${operationType}`);
-        browser = await chromium.launch({ headless: true });
+        browser = await chromium.launch({ headless: false, ...launchOptions }); // Cambia a true para producción
         const context = await browser.newContext({
             viewport: { width: 1920, height: 1080 },
         });
@@ -28,17 +28,31 @@ async function getTotalProperties(operationType = 'for-sale') {
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
         });
 
-        const url = `https://www.remax.ca/${operationType}`;
+        const url = `https://www.remax-quebec.com/en/${operationType}`;
         console.log(`🔍 Navegando a: ${url}`);
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+         const cookieButtonSelector = '#didomi-notice-agree-button';
+        console.log(`scrapeRemaxQuebec: Buscando botón de cookies: ${cookieButtonSelector}`);
+        
+        try {
+            await page.waitForSelector(cookieButtonSelector, { state: 'visible', timeout: 15000 });
+            console.log("scrapeRemaxQuebec: Botón de cookies encontrado. Haciendo clic...");
+            await page.click(cookieButtonSelector);
+            await page.waitForTimeout(2000); 
+            console.log("scrapeRemaxQuebec: Clic en botón de cookies realizado.");
+        } catch (cookieError) {
+            console.warn(`⚠️ scrapeRemaxQuebec: No se encontró o no se pudo hacer clic en el botón de cookies (${cookieError.message}). Esto puede ser normal si ya se aceptaron o no aparecen.`);
+        }
 
         const containerSelector = '.results-lists';
         console.log(`⏳ Esperando que aparezca el contenedor "${containerSelector}"...`);
         await page.waitForSelector(containerSelector, { timeout: 15000 });
         console.log(`✅ Contenedor "${containerSelector}" encontrado.`);
-
+        await page.waitForSelector('.results-lists__header h1 span.count', { timeout: 10000 });
+        console.log(`⏳ Esperando que aparezca el total de propiedades...`);
         // Usamos regex sobre el H1 directamente, como backup robusto
-        const h1Text = await page.$eval('.results_lists .results-lists__header h1 span.count', el => el.innerText);
+        const h1Text = await page.$eval('.results-lists__header h1 span.count', el => el.innerText);
         const match = h1Text.match(/\d[\d,\.]*/);
         const total = match ? parseInt(match[0].replace(/[^\d]/g, ''), 10) : null;
 
