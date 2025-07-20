@@ -16,7 +16,7 @@ const launchOptions = {
 async function scrapeRemaxQuebec(operationType = 'for-sale') {
     let browser;
     let page;
-    let allProperties = new Map(); // Usaremos un Map para almacenar propiedades únicas por su URL
+    let allProperties = new Map(); 
 
     try {
         console.log("scrapeRemaxQuebec: Lanzando navegador para scraping de scroll infinito...");
@@ -40,7 +40,7 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
             await page.waitForSelector(cookieButtonSelector, { state: 'visible', timeout: 15000 });
             console.log("scrapeRemaxQuebec: Botón de cookies encontrado. Haciendo clic...");
             await page.click(cookieButtonSelector);
-            await page.waitForTimeout(2000); // Dar tiempo para que el pop-up se cierre y la página se asiente
+            await page.waitForTimeout(2000); 
             console.log("scrapeRemaxQuebec: Clic en botón de cookies realizado.");
         } catch (cookieError) {
             console.warn(`⚠️ scrapeRemaxQuebec: No se encontró o no se pudo hacer clic en el botón de cookies (${cookieError.message}). Esto puede ser normal si ya se aceptaron o no aparecen.`);
@@ -94,23 +94,13 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
                 if (propertyUrl && !allProperties.has(propertyUrl)) {
                     const fullPropertyUrl = propertyUrl.startsWith('http') ? propertyUrl : `https://www.remax-quebec.com${propertyUrl}`;
 
-                    // --- SELECTORES REVERTIDOS A LOS MÁS SIMPLES QUE DEBERÍAN FUNCIONAR DENTRO DEL HANDLE ---
-                    // El problema es que estos selectores no son descendientes directos del handle `a.card.card-property-thumbnail`.
-                    // Necesitamos especificar la ruta desde el handle hasta ellos.
-                    // Según el HTML que me proporcionaste:
-                    // - title y address están dentro de .card-wrapper > .card-body > .property-listing-details > ul.property-listing-info
-                    // - price está dentro de .card-wrapper > .card-footer > .property-details
-
-                    // Título
+                  
                     const title = await handle.$eval('div.card-body .property-listing-details .property-details--title', el => el.textContent.trim()).catch(() => 'N/A');
                     
-                    // Precio
                     const price = await handle.$eval('div.card-footer .property-details .property-details--price', el => el.textContent.trim()).catch(() => 'N/A');
                     
-                    // Dirección
                     const address = await handle.$eval('div.card-body .property-listing-details .property-details--address', el => el.textContent.trim()).catch(() => 'N/A');
                     
-                    // Iconos (bedrooms, bathrooms, toilets, surfaceBuilt) y Superficie Terreno
                     const bedrooms = await handle.$eval('span[aria-label="bed icon"] + label', el => parseInt(el.textContent.trim().match(/\d+/)?.[0]) || 0).catch(() => 0);
                     const bathrooms = await handle.$eval('span[aria-label="bath icon"] + label', el => parseInt(el.textContent.trim().match(/\d+/)?.[0]) || 0).catch(() => 0);
                     const toilets = await handle.$eval('span[aria-label="toilet icon"] + label', el => parseInt(el.textContent.trim().match(/\d+/)?.[0]) || 0).catch(() => 0);
