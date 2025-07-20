@@ -1,6 +1,6 @@
 // index.js
 const express = require('express');
-const { scrapeRemaxQuebec } = require('./scraper'); // Asegúrate de que la ruta sea correcta
+const { scrapeRemaxQuebec, getTotalProperties } = require('./scraper'); // Asegúrate de que la ruta sea correcta
 
 const app = express();
 // Puedes cambiar el puerto a 8080 si 3001 ya está en uso por n8n u otro proceso
