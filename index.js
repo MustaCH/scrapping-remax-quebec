@@ -17,6 +17,38 @@ app.use((req, res, next) => {
     next();
 });
 
+// Endpoint para obtener el total de propiedades de una operación
+app.get('/api/total', async (req, res) => {
+    try {
+        const queryType = req.query.type;
+        const operationId = parseInt(req.query.operationId);
+
+        let operationType;
+
+        if (queryType === 'for-sale') {
+            operationType = 'for-sale';
+        } else if (queryType === 'for-rent') {
+            operationType = 'for-rent';
+        } else if (operationId === 1) {
+            operationType = 'for-sale';
+        } else if (operationId === 2) {
+            operationType = 'for-rent';
+        } else {
+            console.warn(`Tipo de operación no especificado o inválido ('${queryType}', operationId: ${operationId}). Usando "for-sale" por defecto.`);
+            operationType = 'for-sale'; 
+        }
+
+        console.log(`🔍 Obteniendo total de propiedades para operación: ${operationType}`);
+        const result = await getTotalProperties(operationType);
+        
+        res.status(result.success ? 200 : 500).json(result);
+
+    } catch (err) {
+        console.error('❌ Error crítico en la ruta /api/total:', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // Endpoint para iniciar el scraping
 app.get('/api/scrape', async (req, res) => {
     try {

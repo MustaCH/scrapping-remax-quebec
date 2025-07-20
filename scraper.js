@@ -13,6 +13,45 @@ const launchOptions = {
     ]
 };
 
+async function getTotalProperties(operation = 'for-sale') {
+  const url = `https://www.remax.ca/${operation}`;
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  console.log(`🔍 Navegando a: ${url}`);
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+  try {
+    // Espera a que aparezca el <span class="count">
+    await page.waitForSelector('.results-lists__header .count', { timeout: 10000 });
+
+    // Extrae el contenido del <span>
+    const total = await page.$eval('.results-lists__header .count', el =>
+      parseInt(el.textContent.replace(/\D/g, ''), 10)
+    );
+
+    console.log(`✅ Total de propiedades para ${operation}: ${total}`);
+    await browser.close();
+
+    return {
+      success: true,
+      operation,
+      total
+    };
+  } catch (err) {
+    console.error(`❌ Error al obtener el total para ${operation}`, err);
+    await browser.close();
+
+    return {
+      success: false,
+      operation,
+      error: err.message
+    };
+  }
+}
+
+
 async function scrapeRemaxQuebec(operationType = 'for-sale') {
     let browser;
     let page;
@@ -156,4 +195,4 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
     }
 }
 
-module.exports = { scrapeRemaxQuebec };
+module.exports = { scrapeRemaxQuebec, getTotalProperties };
