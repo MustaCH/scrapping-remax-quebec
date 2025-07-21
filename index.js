@@ -1,6 +1,7 @@
 // index.js
 const express = require('express');
 const { scrapeRemaxQuebec, getTotalProperties } = require('./scraper'); // Asegúrate de que la ruta sea correcta
+const cron = require('node-cron');
 
 const app = express();
 // Puedes cambiar el puerto a 8080 si 3001 ya está en uso por n8n u otro proceso
@@ -88,6 +89,17 @@ app.get('/api/scrape', async (req, res) => {
     }
 });
 
+// ⏰ Ejecutar todos los días a las 00:00
+cron.schedule('0 0 * * *', async () => {
+    console.log("⏰ Ejecutando scrapping diario para 'for-sale' y 'for-rent'");
+    try {
+        await scrapeRemaxQuebec('for-sale');
+        await scrapeRemaxQuebec('for-rent');
+        console.log("✅ Scraping diario completado");
+    } catch (err) {
+        console.error("❌ Error durante el scraping diario:", err);
+    }
+});
 
 // Inicia el servidor Express
 app.listen(port, () => {
