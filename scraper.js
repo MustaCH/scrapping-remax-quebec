@@ -1,5 +1,5 @@
 const { chromium } = require('playwright');
-const { embedAndStoreProperties } = requiere('./qdrantClient.js');
+const { embedAndStoreProperties } = require('./qdrantClient.js');
 
 const launchOptions = {
     args: [
