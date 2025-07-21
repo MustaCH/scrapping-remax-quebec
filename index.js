@@ -1,6 +1,6 @@
 // index.js
 import express from 'express';
-import { scrapeRemaxQuebec, getTotalProperties } from './scraper.js'; // Asegúrate de que la ruta sea correcta
+import { scrapeRemaxQuebec, getTotalProperties } from './scraper.js';
 import cron from 'node-cron';
 
 const app = express();
