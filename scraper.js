@@ -14,7 +14,7 @@ const launchOptions = {
     ]
 };
 
-async function getTotalProperties(operationType = 'for-sale') {
+export async function getTotalProperties(operationType = 'for-sale') {
     let browser;
     let page;
 
@@ -71,7 +71,7 @@ async function getTotalProperties(operationType = 'for-sale') {
 
 
 
-async function scrapeRemaxQuebec(operationType = 'for-sale') {
+export async function scrapeRemaxQuebec(operationType = 'for-sale') {
     let browser;
     let page;
     let allProperties = new Map(); 
@@ -216,4 +216,3 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
     }
 }
 
-export default { scrapeRemaxQuebec, getTotalProperties };
