@@ -69,10 +69,6 @@ export async function embedAndStoreProperties(properties) {
     for (let i = 0; i < vectors.length; i += BATCH_SIZE) {
         const batch = vectors.slice(i, i + BATCH_SIZE);
         try {
-            // ✅ Mostrar la forma del primer punto del batch
-            console.log("🔍 Ejemplo de punto enviado a Qdrant:");
-            console.dir(batch[0], { depth: null });
-
             await axios.put(`${QDRANT_URL}/collections/${COLLECTION}/points?wait=true`, {
             points: batch
             });
