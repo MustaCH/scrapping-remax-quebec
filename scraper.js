@@ -107,7 +107,7 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale') {
         // --- Bucle de Scroll Infinito ---
         let previousScrollHeight = -1; 
         let scrollAttempt = 0;
-        const MAX_SCROLL_ATTEMPTS = 500; 
+        const MAX_SCROLL_ATTEMPTS = 2; 
 
         const PROPERTY_ITEM_SELECTOR = 'a.card.card-property-thumbnail';
         const SCROLLABLE_CONTAINER_SELECTOR = 'aside'; 
@@ -163,10 +163,10 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale') {
                     const bathrooms = await handle.$eval('span[aria-label="bath icon"] + label', el => parseInt(el.textContent.trim().match(/\d+/)?.[0]) || 0).catch(() => 0);
                     const toilets = await handle.$eval('span[aria-label="toilet icon"] + label', el => parseInt(el.textContent.trim().match(/\d+/)?.[0]) || 0).catch(() => 0);
                     
-                    const surfaceBuilt = await handle.$eval('span[aria-label="door-open icon"] + label', el => el.textContent.trim()).catch(() => 'No disponible');
+                    const surfaceBuilt = await handle.$eval('span[aria-label="door-open icon"] + label', el => el.textContent.trim()).catch(() => 'N/A');
                     
                     const surfaceLandElement = await handle.$('span[aria-label="trees icon"] + label');
-                    const surfaceLand = surfaceLandElement ? await surfaceLandElement.evaluate(el => el.textContent.trim()) : 'No disponible';
+                    const surfaceLand = surfaceLandElement ? await surfaceLandElement.evaluate(el => el.textContent.trim()) : 'N/A';
                     
                     const newProperty = {
                         url: fullPropertyUrl,
@@ -178,7 +178,7 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale') {
                         toilets,
                         surfaceLand, 
                         surfaceBuilt, 
-                        operation: operationType === 'for-sale' ? 'Venta' : 'Alquiler',
+                        operation: operationType === 'for-sale' ? 'For Sale' : 'For Rent',
                     };
                     allProperties.set(fullPropertyUrl, newProperty);
                     propertiesAddedThisScroll++;
