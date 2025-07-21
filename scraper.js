@@ -216,4 +216,4 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
     }
 }
 
-module.exports = { scrapeRemaxQuebec, getTotalProperties };
+export default { scrapeRemaxQuebec, getTotalProperties };
