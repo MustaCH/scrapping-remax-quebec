@@ -1,4 +1,4 @@
-import { scrapeRemaxQuebec } from './scraper.js';
+const { scrapeRemaxQuebec } = require('./scraper.js');
 
 (async () => {
   try {

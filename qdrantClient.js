@@ -1,7 +1,7 @@
 // qdrantClient.js
-import axios from 'axios';
-import dotenv from 'dotenv';
-import { getEmbedding } from './embedder.js';
+const { axios } = require('axios');
+const { dotenv} = require('dotenv');
+const { getEmbedding } = require('./embedder.js');
 
 dotenv.config();
 
