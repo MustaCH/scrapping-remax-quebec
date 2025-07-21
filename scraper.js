@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const { embedAndStoreProperties } = requiere('./qdrantClient.js');
 
 const launchOptions = {
     args: [
@@ -202,7 +203,9 @@ async function scrapeRemaxQuebec(operationType = 'for-sale') {
         const finalMappedProperties = Array.from(allProperties.values()); 
 
         console.log(`✅ scrapeRemaxQuebec: Proceso completado. Total de propiedades únicas extraídas: ${finalMappedProperties.length}`);
-        return finalMappedProperties;
+        await embedAndStoreProperties(finalMappedProperties);
+        console.log("✅ Datos embebidos y almacenados en Qdrant correctamente.");
+
 
     } catch (error) {
         console.error(`❌ scrapeRemaxQuebec: Error fatal en scrapeRemaxQuebec:`, error);
