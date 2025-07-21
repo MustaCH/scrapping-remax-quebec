@@ -70,11 +70,10 @@ async function getTotalProperties(operationType = 'for-sale') {
 
 
 
-async function scrapeRemaxQuebec(operationType = 'for-sale', range = {}) {
+async function scrapeRemaxQuebec(operationType = 'for-sale') {
     let browser;
     let page;
     let allProperties = new Map(); 
-    const { startIndex, endIndex } = range;
 
     try {
         console.log("scrapeRemaxQuebec: Lanzando navegador para scraping de scroll infinito...");
@@ -187,11 +186,6 @@ async function scrapeRemaxQuebec(operationType = 'for-sale', range = {}) {
             
             console.log(`  -> Propiedades únicas añadidas en este scroll: ${propertiesAddedThisScroll}. Total de propiedades únicas extraídas HASTA AHORA: ${allProperties.size}`);
             
-            if (typeof endIndex === 'number' && allProperties.size > endIndex) {
-                console.log(`✅ Ya se recolectaron más de ${endIndex} propiedades. Deteniendo scroll anticipadamente.`);
-                break;
-            }
-            
             if (propertiesAddedThisScroll === 0 && scrollAttempt > 1) { 
                 console.log("✅ scrapeRemaxQuebec: No se encontraron nuevas propiedades únicas después de este scroll. Asumiendo el final de la lista.");
                 break; 
@@ -207,13 +201,8 @@ async function scrapeRemaxQuebec(operationType = 'for-sale', range = {}) {
 
         const finalMappedProperties = Array.from(allProperties.values()); 
 
-        const slicedProperties = (typeof startIndex === 'number' && typeof endIndex === 'number')
-            ? finalMappedProperties.slice(startIndex, endIndex + 1)
-            : finalMappedProperties;
-
         console.log(`✅ scrapeRemaxQuebec: Proceso completado. Total de propiedades únicas extraídas: ${finalMappedProperties.length}`);
-        console.log(`📦 Devolviendo ${slicedProperties.length} propiedades${startIndex !== undefined ? ` (rango ${startIndex}-${endIndex})` : ''}`);
-        return slicedProperties;
+        return finalMappedProperties;
 
     } catch (error) {
         console.error(`❌ scrapeRemaxQuebec: Error fatal en scrapeRemaxQuebec:`, error);
