@@ -71,7 +71,7 @@ export async function getTotalProperties(operationType = 'for-sale') {
 
 
 
-export async function scrapeRemaxQuebec(operationType = 'for-sale') {
+export async function scrapeRemaxQuebec(operationType = 'for-sale', subPath = '') {
     let browser;
     let page;
     let allProperties = new Map(); 
@@ -87,9 +87,10 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale') {
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
         });
 
-        const baseUrl = `https://www.remax-quebec.com/en/${operationType}`;
+        const baseUrl = `https://www.remax-quebec.com/en/${operationType}${subPath ? `/${subPath}` : ''}`;
         console.log(`scrapeRemaxQuebec: Navegando a: ${baseUrl}`);
         await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 120000 }); 
+        console.log(`🌐 URL completa: ${baseUrl}`);
 
         const cookieButtonSelector = '#didomi-notice-agree-button';
         console.log(`scrapeRemaxQuebec: Buscando botón de cookies: ${cookieButtonSelector}`);

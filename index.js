@@ -56,6 +56,7 @@ app.get('/api/scrape', async (req, res) => {
         // Determinar el tipo de operación: 'for-sale' o 'for-rent'
         // Prioriza el parámetro 'type' si está presente.
         const queryType = req.query.type;
+        const subPath = req.query.subPath || '';
         const operationId = parseInt(req.query.operationId); // 1 para venta, 2 para alquiler (asumiendo)
 
         let operationType;
@@ -77,7 +78,7 @@ app.get('/api/scrape', async (req, res) => {
         console.log(`🚀 Iniciando scraping para la operación: ${operationType}`);
         
         // Llama a la función del scraper que ahora maneja todas las páginas y selectores
-        const properties = await scrapeRemaxQuebec(operationType);
+        const properties = await scrapeRemaxQuebec(operationType, subPath);
         
         // Envía la respuesta con los datos extraídos
         res.status(200).json({ success: true, data: properties });
@@ -89,17 +90,6 @@ app.get('/api/scrape', async (req, res) => {
     }
 });
 
-// ⏰ Ejecutar todos los días a las 00:00
-cron.schedule('0 0 * * *', async () => {
-    console.log("⏰ Ejecutando scrapping diario para 'for-sale' y 'for-rent'");
-    try {
-        await scrapeRemaxQuebec('for-sale');
-        await scrapeRemaxQuebec('for-rent');
-        console.log("✅ Scraping diario completado");
-    } catch (err) {
-        console.error("❌ Error durante el scraping diario:", err);
-    }
-});
 
 // Inicia el servidor Express
 app.listen(port, () => {
