@@ -204,9 +204,6 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale', subPath = ''
         const finalMappedProperties = Array.from(allProperties.values()); 
 
         console.log(`✅ scrapeRemaxQuebec: Proceso completado. Total de propiedades únicas extraídas: ${finalMappedProperties.length}`);
-        await embedAndStoreProperties(finalMappedProperties);
-        console.log("✅ Datos embebidos y almacenados en Qdrant correctamente.");
-
 
     } catch (error) {
         console.error(`❌ scrapeRemaxQuebec: Error fatal en scrapeRemaxQuebec:`, error);
