@@ -205,6 +205,8 @@ export async function scrapeRemaxQuebec(operationType = 'for-sale', subPath = ''
 
         console.log(`✅ scrapeRemaxQuebec: Proceso completado. Total de propiedades únicas extraídas: ${finalMappedProperties.length}`);
 
+        return finalMappedProperties;
+        
     } catch (error) {
         console.error(`❌ scrapeRemaxQuebec: Error fatal en scrapeRemaxQuebec:`, error);
         if (browser) {
